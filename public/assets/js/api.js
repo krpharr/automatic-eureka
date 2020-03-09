@@ -8,8 +8,8 @@ const API = {
     }
     const json = await res.json();
     console.log(json);
-    return json[json.length - 1];
-    // return json;
+    // return json[json.length - 1];
+    return json;
   },
   async addExercise(data) {
     const id = location.search.split("=")[1];

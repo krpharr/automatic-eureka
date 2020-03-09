@@ -9,10 +9,13 @@ const WorkoutSchema = new Schema({
   },
   exercises: {
     type: Array
+  },
+  totalDuration: {
+    type: Number
   }
 });
 
-WorkoutSchema.methods.totalDuration = function() {
+WorkoutSchema.methods.setTotalDuration = function() {
   let dur = 0;
   this.exercises.forEach(e => {
     console.log(e.duration);

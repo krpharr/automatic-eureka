@@ -3,33 +3,22 @@ const db = require("../models");
 
 // getLastWorkout()
 router.get("/api/workouts", (req, res) => {
-
-  db.Workout.findAndModify({
-      query: {},
-      update: [{ $set: { "totalDuration": { $sum: "$exercises.duration" } } }],
-      new: true
-    }).then(dbWorkout => {
+  db.Workout.findOne().sort({ field: 'asc', _id: -1 }).limit(1)
+    .then(dbWorkout => {
+      console.log(dbWorkout);
+      let dur = 0;
+      dbWorkout.exercises.forEach(e => {
+        console.log(e.duration);
+        if (e.duration) dur += e.duration;
+      });
+      console.log(dur);
+      dbWorkout.totalDuration = dur;
+      console.log(dbWorkout);
       res.json(dbWorkout);
     })
     .catch(err => {
       res.status(400).json(err);
     });
-
-  //   db.Workout.findOne({}, {}, { sort: { 'created_at': -1 } })
-  //     .then(dbWorkout => {
-  //       res.json(dbWorkout);
-  //     })
-  //     .catch(err => {
-  //       res.status(400).json(err);
-  //     });
-
-  //   db.Workout.find({})
-  //     .then(dbWorkout => {
-  //       res.json(dbWorkout);
-  //     })
-  //     .catch(err => {
-  //       res.status(400).json(err);
-  //     });
 });
 // addExercise(data)
 router.post("/api/workouts/:id", (req, res) => {
