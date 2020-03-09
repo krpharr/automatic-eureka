@@ -64,11 +64,17 @@ router.post("/api/workouts", (req, res) => {
 router.get("/api/workouts/range", (req, res) => {
   db.Workout.find({})
     .then(dbWorkout => {
-      // let dur = 0;
-      // dbWorkout.exercises.forEach(e => {
-      //   if (e.duration) dur += e.duration;
-      // });
-      // dbWorkout.totalDuration = dur;
+      dbWorkout.forEach(wo => {
+        let dur = 0;
+        let wgt = 0;
+        wo.exercises.forEach(e => {
+          if (e.duration) dur += e.duration;
+          if (e.weight) wgt += e.weight;
+        });
+        wo.totalDuration = dur;
+        wo.totalWeight = wgt;
+      });
+      console.log(dbWorkout);
       res.json(dbWorkout);
     })
     .catch(err => {

@@ -12,6 +12,9 @@ const WorkoutSchema = new Schema({
   },
   totalDuration: {
     type: Number
+  },
+  totalWeight: {
+    type: Number
   }
 });
 
