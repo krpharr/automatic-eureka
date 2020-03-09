@@ -3,13 +3,33 @@ const db = require("../models");
 
 // getLastWorkout()
 router.get("/api/workouts", (req, res) => {
-  db.Workout.findOne({}, {}, { sort: { 'created_at': -1 } })
-    .then(dbWorkout => {
+
+  db.Workout.findAndModify({
+      query: {},
+      update: [{ $set: { "totalDuration": { $sum: "$exercises.duration" } } }],
+      new: true
+    }).then(dbWorkout => {
       res.json(dbWorkout);
     })
     .catch(err => {
       res.status(400).json(err);
     });
+
+  //   db.Workout.findOne({}, {}, { sort: { 'created_at': -1 } })
+  //     .then(dbWorkout => {
+  //       res.json(dbWorkout);
+  //     })
+  //     .catch(err => {
+  //       res.status(400).json(err);
+  //     });
+
+  //   db.Workout.find({})
+  //     .then(dbWorkout => {
+  //       res.json(dbWorkout);
+  //     })
+  //     .catch(err => {
+  //       res.status(400).json(err);
+  //     });
 });
 // addExercise(data)
 router.post("/api/workouts/:id", (req, res) => {
@@ -29,6 +49,16 @@ router.post("/api/workouts/:id", (req, res) => {
     }
   );
 });
-
+// createWorkout(data = {})
+router.post("/api/workouts", (req, res) => {
+  let newWorkout = new db.Workout(JSON.parse(req.body));
+  newWorkout.save((error, data) => {
+    if (error) {
+      res.status(400).json(error);
+    } else {
+      res.json(data);
+    }
+  });
+});
 
 module.exports = router;
