@@ -4,9 +4,6 @@ const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
 
-// const Workout = require("./workoutModel.js");
-// const Exercise = require("./exerciseModel.js");
-
 const app = express();
 
 app.use(logger("dev"));
@@ -17,6 +14,9 @@ app.use(express.json());
 app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
+
+app.use(require("./routes/api-routes.js"));
+app.use(require("./routes/html-routes.js"));
 
 // app.post("/submit", ({ body }, res) => {
 //   User.create(body)
