@@ -1,19 +1,16 @@
 const router = require("express").Router();
+const mongojs = require("mongojs");
 const db = require("../models");
 
 // getLastWorkout()
 router.get("/api/workouts", (req, res) => {
   db.Workout.findOne().sort({ field: 'asc', _id: -1 }).limit(1)
     .then(dbWorkout => {
-      console.log(dbWorkout);
       let dur = 0;
       dbWorkout.exercises.forEach(e => {
-        console.log(e.duration);
         if (e.duration) dur += e.duration;
       });
-      console.log(dur);
       dbWorkout.totalDuration = dur;
-      console.log(dbWorkout);
       res.json(dbWorkout);
     })
     .catch(err => {
@@ -21,8 +18,11 @@ router.get("/api/workouts", (req, res) => {
     });
 });
 // addExercise(data)
-router.post("/api/workouts/:id", (req, res) => {
-  db.Workout.update({
+router.put("/api/workouts/:id", (req, res) => {
+  // db.Workout.find({_id: mongojs.ObjectId(req.params.id)})
+  //   let wd = req.body;
+  console.log("req.body", req.body);
+  db.Workout.updateOne({
       _id: mongojs.ObjectId(req.params.id)
     }, {
       $push: {
@@ -40,14 +40,40 @@ router.post("/api/workouts/:id", (req, res) => {
 });
 // createWorkout(data = {})
 router.post("/api/workouts", (req, res) => {
-  let newWorkout = new db.Workout(JSON.parse(req.body));
-  newWorkout.save((error, data) => {
-    if (error) {
-      res.status(400).json(error);
-    } else {
-      res.json(data);
-    }
-  });
+  console.log(req.body);
+  console.log(typeof req.body);
+  let newWorkout = new db.Workout(req.body);
+  //   newWorkout.setDate();
+  console.log(newWorkout);
+  db.Workout.create(newWorkout)
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+  //   newWorkout.save((error, data) => {
+  //     if (error) {
+  //       res.status(400).json(error);
+  //     } else {
+  //       res.json(data);
+  //     }
+  //   });
+});
+
+router.get("/api/workouts/range", (req, res) => {
+  db.Workout.find({})
+    .then(dbWorkout => {
+      // let dur = 0;
+      // dbWorkout.exercises.forEach(e => {
+      //   if (e.duration) dur += e.duration;
+      // });
+      // dbWorkout.totalDuration = dur;
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
 });
 
 module.exports = router;
