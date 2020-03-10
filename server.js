@@ -18,16 +18,6 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { use
 app.use(require("./routes/api-routes.js"));
 app.use(require("./routes/html-routes.js"));
 
-// app.post("/submit", ({ body }, res) => {
-//   User.create(body)
-//     .then(dbUser => {
-//       res.json(dbUser);
-//     })
-//     .catch(err => {
-//       res.json(err);
-//     });
-// });
-
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
 });

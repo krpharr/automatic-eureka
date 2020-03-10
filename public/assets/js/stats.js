@@ -36,8 +36,10 @@ function generatePalette() {
 
 function populateChart(data) {
   let days = dates(data);
-  let durations = duration(data);
+  let durations = totalDuration(data);
   let pounds = calculateTotalWeight(data);
+  let exerciseDurations = exDurations(data);
+  let exerciseWeights = exWeights(data);
   let workouts = workoutNames(data);
   const colors = generatePalette();
 
@@ -128,7 +130,7 @@ function populateChart(data) {
       datasets: [{
         label: "Excercises Performed",
         backgroundColor: colors,
-        data: durations
+        data: exerciseDurations
       }]
     },
     options: {
@@ -144,9 +146,9 @@ function populateChart(data) {
     data: {
       labels: workouts,
       datasets: [{
-        label: "Excercises Performed",
+        // label: "Excercises Performed",
         backgroundColor: colors,
-        data: pounds
+        data: exerciseWeights
       }]
     },
     options: {
@@ -168,7 +170,7 @@ function dates(data) {
   return days;
 }
 
-function duration(data) {
+function totalDuration(data) {
   let durations = [];
 
   data.forEach(workout => {
@@ -186,6 +188,32 @@ function calculateTotalWeight(data) {
   });
 
   return total;
+}
+
+function exDurations(data) {
+  let durations = [];
+
+  data.forEach(workout => {
+    workout.exercises.forEach(e => {
+      durations.push(e.duration);
+    });
+
+  });
+
+  return durations;
+}
+
+function exWeights(data) {
+  let weight = [];
+
+  data.forEach(workout => {
+    workout.exercises.forEach(e => {
+      weight.push(e.weight);
+    });
+
+  });
+
+  return weight;
 }
 
 function workoutNames(data) {
